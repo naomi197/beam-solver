@@ -103,6 +103,31 @@ if is_expired:
         <p style="color: #94a3b8; font-size: 13px;">Instant key delivery • Lifetime access • Email: alirezafazeli@live.com</p>
     </div>
     """, unsafe_allow_html=True)
+# --- Crypto Payment Block (USDT on Ethereum) ---
+st.markdown("---")
+st.markdown("""
+<div class="lock-box">
+    <h2>💎 Pay with Crypto — USDT (Ethereum Network)</h2>
+    <p style="color: #cbd5e1;">Send <b>49 USDT</b> to the wallet address below (ERC-20 network only),<br>
+    then send your <b>TxID</b> to <b>alirezafazeli@live.com</b> to receive your lifetime license key.</p>
+</div>
+""", unsafe_allow_html=True)
+
+with st.container(border=True):
+    st.markdown("#### 📬 Wallet Address (USDT / ERC-20)")
+    st.code("0xf3ddb743b4f1BD8b59Bf5Bf22905555Fe5c4B7C1", language=None)
+    st.button("📋 Copy Wallet Address", on_click=lambda: None, key="copy_wallet")
+    st.markdown(
+        f"[🔗 Verify payments on Etherscan](https://etherscan.io/address/0xf3ddb743b4f1BD8b59Bf5Bf22905555Fe5c4B7C1)"
+    )
+    st.warning("⚠️ Only send USDT on the **Ethereum (ERC-20)** network. Funds sent on other networks may be lost.")
+
+with st.container(border=True):
+    st.markdown("#### 🧾 Confirm your payment")
+    st.text_input("Your TxID (transaction hash):", key="txid_input")
+    st.text_input("Your Email:", key="buyer_email")
+    if st.button("✅ I have paid — Request my license"):
+        st.success("Received! Send your TxID to alirezafazeli@live.com — your key will be delivered shortly.")
     st.stop()
 
 # --- تنظیمات تیر و بارگذاری ---
