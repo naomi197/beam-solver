@@ -140,10 +140,10 @@ supports = [
     Support(position=s1_pos, ux=True, uy=True),
     Support(position=s2_pos, ux=False, uy=True)
 ]
-point_loads = [PointLoad(position=p_pos, fy=-p_load * 1000)] if p_load > 0 else []
-dist_loads = [DistributedLoad(x_start=0, x_end=length, q_start=-q_load * 1000, q_end=-q_load * 1000)] if q_load > 0 else []
+point_loads = [PointLoad(position=p_pos, fz=p_load * 1000)] if p_load > 0 else []
+dist_loads_list = [DistributedLoad(start=0, end=length, w_start=q_load * 1000)] if q_load > 0 else []
 
-beam = Beam(length=length, E=E_val, I=I_val, supports=supports, point_loads=point_loads, distributed_loads=dist_loads)
+beam = Beam(length=length, E=E_val, I=I_val, supports=supports, point_loads=point_loads, dist_loads=dist_loads_list)
 results = beam.solve()
 
 # نمایش کارت‌های شاخص
