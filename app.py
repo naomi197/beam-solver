@@ -135,23 +135,49 @@ with col_in2:
     p_pos = st.number_input("Point Load Position (m)", min_value=0.0, max_value=length, value=length/2, step=0.5)
     q_load = st.number_input("Uniform Load q (kN/m, downward)", value=0.0, step=1.0)
 
-# حل مسئله با موتور تحلیل
+# تکیه‌گاه‌ها و بارهای ورودی
 supports = [
     Support(position=s1_pos, ux=True, uy=True),
     Support(position=s2_pos, ux=False, uy=True)
 ]
 point_loads = [PointLoad(position=p_pos, fz=p_load * 1000)] if p_load > 0 else []
-dist_loads_list = [DistributedLoad(start=0, end=length, w_start=q_load * 1000)] if q_load > 0 else []
+dist_loads = [DistributedLoad(start=0, end=length, w_start=q_load * 1000)] if q_load > 0 else []
 
-beam = Beam(length=length, E=E_val, I=I_val, supports=supports, point_loads=point_loads, dist_loads=dist_loads_list)
-results = beam.solve()
+beam = Beam(length=length, E=E_val, I=I_val, supports=supports, point_loads=point_loads, dist_loads=dist_loads)
+
+# اجرای محاسبات برش و لنگر
+x_pts, V_pts, M_pts = beam.shear_moment(n_points=500)
+
+# محاسبه خیز (Deflection via double integration: d2v/dx2 = M / EI)
+EI = E_val * I_val
+dx = x_pts[1] - x_pts[0]
+curvature = M_pts / EI
+# انتگرال اول (شیب با یک شرط فرضی C1=0)
+theta = np.cumsum(curvature) * dx
+# انتگرال دوم (تغییرشکل)
+defl_raw = np.cumsum(theta) * dx
+# اعمال شرایط مرزی تکیه‌گاه‌ها برای رفع جابجایی صلب (y(s1) = 0 , y(s2) = 0)
+idx_s1 = int(np.clip(round((s1_pos / length) * (len(x_pts) - 1)), 0, len(x_pts) - 1))
+idx_s2 = int(np.clip(round((s2_pos / length) * (len(x_pts) - 1)), 0, len(x_pts) - 1))
+if idx_s2 != idx_s1:
+    slope_corr = (defl_raw[idx_s2] - defl_raw[idx_s1]) / (x_pts[idx_s2] - x_pts[idx_s1])
+    defl = defl_raw - (defl_raw[idx_s1] + slope_corr * (x_pts - x_pts[idx_s1]))
+else:
+    defl = defl_raw - defl_raw[idx_s1]
+
+results = {
+    'x': x_pts,
+    'shear': V_pts,
+    'moment': M_pts,
+    'deflection': defl
+}
 
 # نمایش کارت‌های شاخص
 st.markdown("---")
 m1, m2, m3, m4 = st.columns(4)
-max_moment = np.max(np.abs(results['moment'])) / 1000
-max_shear = np.max(np.abs(results['shear'])) / 1000
-max_defl = np.max(np.abs(results['deflection'])) * 1000
+max_moment = float(np.max(np.abs(results['moment'])) / 1000)
+max_shear = float(np.max(np.abs(results['shear'])) / 1000)
+max_defl = float(np.max(np.abs(results['deflection'])) * 1000)
 total_load = p_load + (q_load * length)
 
 m1.markdown(f'<div class="metric-card"><div class="metric-val">{max_moment:.2f} kN·m</div><div class="metric-lbl">Max Bending Moment</div></div>', unsafe_allow_html=True)
@@ -188,10 +214,13 @@ plt.tight_layout()
 st.pyplot(fig)
 
 # خروجی گزارش PDF
-pdf_bytes = generate_pdf_report(beam, results)
-st.download_button(
-    label="📄 Download Certified Structural Report (PDF)",
-    data=pdf_bytes,
-    file_name="BeamSolver_Pro_Report.pdf",
-    mime="application/pdf"
-)
+try:
+    pdf_bytes = generate_pdf_report(beam, results)
+    st.download_button(
+        label="📄 Download Certified Structural Report (PDF)",
+        data=pdf_bytes,
+        file_name="BeamSolver_Pro_Report.pdf",
+        mime="application/pdf"
+    )
+except Exception as e:
+    st.info(f"Report generation standby: {e}")
