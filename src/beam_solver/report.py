@@ -1,4 +1,4 @@
-﻿import os
+import os
 import tempfile
 from fpdf import FPDF
 import matplotlib.pyplot as plt
@@ -18,7 +18,7 @@ class BeamReport(FPDF):
         self.set_x(46 if os.path.exists(logo_path) else 14)
         self.set_font("Helvetica", "I", 9)
         self.set_text_color(100, 116, 139)
-        self.cell(0, 5, "Certified Structural Analysis & Calculation Dossier | Lead: Alireza Sani", ln=True)
+        self.cell(0, 5, "Structural Analysis & Calculation Report | Lead: Alireza Sani", ln=True)
         self.ln(6)
         self.set_draw_color(203, 213, 225)
         self.set_line_width(0.5)
@@ -29,7 +29,7 @@ class BeamReport(FPDF):
         self.set_y(-15)
         self.set_font("Helvetica", "I", 8)
         self.set_text_color(148, 163, 184)
-        self.cell(0, 10, f"Page {self.page_no()}/{{nb}} - Confidential & Certified Engineering Output", align="C")
+        self.cell(0, 10, f"Page {self.page_no()}/{{nb}} - Engineering Analysis Output - Preliminary Review", align="C")
 
 def generate_pdf_report(beam, summary_data, fig_plots):
     pdf = BeamReport()

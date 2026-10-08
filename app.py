@@ -1,4 +1,4 @@
-﻿import os
+import os
 import numpy as np
 import streamlit as st
 import matplotlib.pyplot as plt
@@ -125,7 +125,7 @@ with kpi4:
 
 st.write("")
 
-tab_diagrams, tab_checks, tab_report = st.tabs(["📊 Force & Deflection Diagrams", "📐 Stress & Limit Checks", "📑 Certified Dossier (PDF)"])
+tab_diagrams, tab_checks, tab_report = st.tabs(["📊 Force & Deflection Diagrams", "📐 Stress & Limit Checks", "📑 Calculation Report (PDF)"])
 
 plt.style.use("dark_background")
 fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(10, 8), sharex=True)
@@ -151,7 +151,7 @@ with tab_checks:
 
 with tab_report:
     st.markdown("### Official Calculation Dossier Export")
-    st.write("Generate a signed, certified PDF calculation dossier including design metrics, stress verification, and diagram curves.")
+    st.write("Generate a PDF calculation report including design metrics, stress verification, and diagram curves.")
     summary_dict = {
         "max_moment": max_m, "max_shear": max_v,
         "max_deflection": max_d, "limit_deflection": defl_limit, "deflection_status": defl_status,
@@ -166,7 +166,7 @@ with tab_report:
     plt.tight_layout()
     pdf_bytes = generate_pdf_report(beam, summary_dict, fig_print)
     plt.close(fig_print)
-    st.download_button(label="📥 Download Certified Engineering PDF Dossier", data=pdf_bytes,
+    st.download_button(label="📥 Download Engineering Calculation PDF Report", data=pdf_bytes,
                        file_name="BeamSolver_Pro_Calculation_Dossier.pdf", mime="application/pdf")
 
 st.markdown("---")
