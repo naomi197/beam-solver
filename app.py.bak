@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.append(os.path.abspath("src"))
+
 import time
 import streamlit as st
 import numpy as np
@@ -215,11 +219,7 @@ st.pyplot(fig)
 
 # خروجی گزارش PDF
 try:
-    res = dict(results)
-    res['v_max'] = float(np.max(np.abs(results['shear']))) if len(results['shear']) else 0.0
-    res['m_max'] = float(np.max(np.abs(results['moment']))) if len(results['moment']) else 0.0
-    res['w_max'] = float(np.max(np.abs(results['deflection']))) if len(results['deflection']) else 0.0
-    pdf_bytes = generate_pdf_report(beam, res)
+    pdf_bytes = generate_pdf_report(beam, results)
     st.download_button(
         label="📄 Download Certified Structural Report (PDF)",
         data=pdf_bytes,
