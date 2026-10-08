@@ -32,13 +32,6 @@ st.markdown("""
         font-size: 13px;
         color: #94a3b8;
     }
-    .trial-box {
-        background-color: #0f172a;
-        border: 1px solid #eab308;
-        padding: 10px 15px;
-        border-radius: 8px;
-        margin-bottom: 15px;
-    }
     .lock-box {
         background: linear-gradient(135deg, #1e1b4b, #311042);
         border: 2px solid #a855f7;
@@ -47,12 +40,13 @@ st.markdown("""
         text-align: center;
         color: white;
         margin-top: 20px;
+        margin-bottom: 20px;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# --- مدیریت زمان آزمایشی (1 دقیقه) و لایسنس ---
-TRIAL_DURATION = 60 # 60 ثانیه
+# --- مدیریت زمان آزمایشی (60 ثانیه) و لایسنس ---
+TRIAL_DURATION = 60
 
 if "start_time" not in st.session_state:
     st.session_state.start_time = time.time()
@@ -62,14 +56,14 @@ if "is_unlocked" not in st.session_state:
 elapsed = time.time() - st.session_state.start_time
 remaining = max(0, int(TRIAL_DURATION - elapsed))
 
-# نوار کناری برای لایسنس
+# نوار کناری (Sidebar)
 with st.sidebar:
     st.title("🏗️ BeamSolver Pro")
     st.caption("Engineered by Alireza Sani")
     st.markdown("---")
     
     license_key = st.text_input("🔑 Enter Pro License Key:", type="password")
-    if license_key == "BEAM-PRO-2026" or license_key == "ALIREZA-VIP":
+    if license_key in ["BEAM-PRO-2026", "ALIREZA-VIP"]:
         st.session_state.is_unlocked = True
         st.success("✅ Pro License Activated! Unlimited Access.")
     elif license_key:
@@ -77,7 +71,7 @@ with st.sidebar:
 
 is_expired = (remaining <= 0) and not st.session_state.is_unlocked
 
-# نمایش وضعیت تایمر
+# وضعیت لایسنس در سایدبار
 if st.session_state.is_unlocked:
     st.sidebar.markdown("🟢 **Status:** Pro License (Active)")
 elif not is_expired:
@@ -88,49 +82,44 @@ else:
 st.title("🏗️ BeamSolver Pro — 2D Structural Beam Analysis")
 st.write("Finite Element Method (FEM) Euler-Bernoulli beam solver with live SFD, BMD and certified PDF export.")
 
+# --- صفحه قفل و پرداخت مستقیم با متاماسک (فقط پس از اتمام ۶۰ ثانیه) ---
 if is_expired:
     st.markdown("""
     <div class="lock-box">
         <h2>🔒 Trial Period Ended (1 Minute Expired)</h2>
         <p style="font-size: 16px; color: #cbd5e1;">
-            Hope you enjoyed testing <b>BeamSolver Pro</b>! To continue analyzing beams, exporting certified PDF reports, and accessing full FEM capabilities, please purchase a license.
+            Hope you enjoyed testing <b>BeamSolver Pro</b>! To unlock lifetime unlimited analysis and PDF export, purchase a Pro license below.
         </p>
         <div style="margin: 20px 0;">
             <a href="mailto:alirezafazeli@live.com?subject=Purchase%20BeamSolver%20Pro%20License" style="background-color: #38bdf8; color: #0f172a; padding: 12px 24px; border-radius: 6px; font-weight: bold; text-decoration: none; font-size: 16px;">
-                💳 Contact to Buy Full License ($49)
+                💳 Contact via Email ($49)
             </a>
         </div>
-        <p style="color: #94a3b8; font-size: 13px;">Instant key delivery • Lifetime access • Email: alirezafazeli@live.com</p>
     </div>
     """, unsafe_allow_html=True)
-# --- Crypto Payment Block (USDT on Ethereum) ---
-st.markdown("---")
-st.markdown("""
-<div class="lock-box">
-    <h2>💎 Pay with Crypto — USDT (Ethereum Network)</h2>
-    <p style="color: #cbd5e1;">Send <b>49 USDT</b> to the wallet address below (ERC-20 network only),<br>
-    then send your <b>TxID</b> to <b>alirezafazeli@live.com</b> to receive your lifetime license key.</p>
-</div>
-""", unsafe_allow_html=True)
 
-with st.container(border=True):
-    st.markdown("#### 📬 Wallet Address (USDT / ERC-20)")
-    st.code("0xf3ddb743b4f1BD8b59Bf5Bf22905555Fe5c4B7C1", language=None)
-    st.button("📋 Copy Wallet Address", on_click=lambda: None, key="copy_wallet")
-    st.markdown(
-        f"[🔗 Verify payments on Etherscan](https://etherscan.io/address/0xf3ddb743b4f1BD8b59Bf5Bf22905555Fe5c4B7C1)"
-    )
-    st.warning("⚠️ Only send USDT on the **Ethereum (ERC-20)** network. Funds sent on other networks may be lost.")
+    st.markdown("### 💎 Direct MetaMask / Crypto Payment (USDT on Ethereum)")
+    st.write("Send **49 USDT** directly to the address below, then submit your transaction hash to receive your instant license key.")
 
-with st.container(border=True):
-    st.markdown("#### 🧾 Confirm your payment")
-    st.text_input("Your TxID (transaction hash):", key="txid_input")
-    st.text_input("Your Email:", key="buyer_email")
-    if st.button("✅ I have paid — Request my license"):
-        st.success("Received! Send your TxID to alirezafazeli@live.com — your key will be delivered shortly.")
+    with st.container(border=True):
+        st.markdown("#### 📬 Receiver Wallet Address (Ethereum / ERC-20)")
+        st.code("0xf3ddb743b4f1BD8b59Bf5Bf22905555Fe5c4B7C1", language=None)
+        st.markdown("[🔗 Check incoming transactions on Etherscan](https://etherscan.io/address/0xf3ddb743b4f1BD8b59Bf5Bf22905555Fe5c4B7C1)")
+        st.warning("⚠️ **Notice:** Send only **USDT** on the **Ethereum (ERC-20)** network to this address.")
+
+    with st.container(border=True):
+        st.markdown("#### 🧾 Submit Payment Confirmation")
+        txid = st.text_input("Transaction Hash (TxID):", key="txid_field")
+        buyer_mail = st.text_input("Your Email Address (for key delivery):", key="mail_field")
+        if st.button("🚀 Confirm Payment & Request Key"):
+            if txid and buyer_mail:
+                st.success("✅ Payment submission recorded! Your activation key will be verified and sent to your email promptly.")
+            else:
+                st.error("Please enter both TxID and Email address.")
+
     st.stop()
 
-# --- تنظیمات تیر و بارگذاری ---
+# --- محیط کاربری و محاسبات اصلی (در طول زمان آزمایشی یا نسخه فعال‌شده) ---
 col_in1, col_in2 = st.columns(2)
 with col_in1:
     st.subheader("📐 Beam Geometry & Material")
@@ -146,7 +135,7 @@ with col_in2:
     p_pos = st.number_input("Point Load Position (m)", min_value=0.0, max_value=length, value=length/2, step=0.5)
     q_load = st.number_input("Uniform Load q (kN/m, downward)", value=0.0, step=1.0)
 
-# حل مسئله
+# حل مسئله با موتور تحلیل
 supports = [
     Support(position=s1_pos, ux=True, uy=True),
     Support(position=s2_pos, ux=False, uy=True)
@@ -157,7 +146,7 @@ dist_loads = [DistributedLoad(x_start=0, x_end=length, q_start=-q_load * 1000, q
 beam = Beam(length=length, E=E_val, I=I_val, supports=supports, point_loads=point_loads, distributed_loads=dist_loads)
 results = beam.solve()
 
-# کارت‌های شاخص
+# نمایش کارت‌های شاخص
 st.markdown("---")
 m1, m2, m3, m4 = st.columns(4)
 max_moment = np.max(np.abs(results['moment'])) / 1000
@@ -170,27 +159,24 @@ m2.markdown(f'<div class="metric-card"><div class="metric-val">{max_shear:.2f} k
 m3.markdown(f'<div class="metric-card"><div class="metric-val">{max_defl:.2f} mm</div><div class="metric-lbl">Max Deflection</div></div>', unsafe_allow_html=True)
 m4.markdown(f'<div class="metric-card"><div class="metric-val">{total_load:.2f} kN</div><div class="metric-lbl">Total Applied Load</div></div>', unsafe_allow_html=True)
 
-# رسم نمودارها
+# رسم نمودارهای مهندسی
 st.markdown("---")
 st.subheader("📊 Engineering Diagrams")
 fig, axes = plt.subplots(3, 1, figsize=(10, 8), sharex=True)
 plt.style.use('dark_background')
 
-# SFD
 axes[0].plot(results['x'], results['shear']/1000, color='#38bdf8', lw=2)
 axes[0].fill_between(results['x'], results['shear']/1000, color='#38bdf8', alpha=0.2)
 axes[0].set_ylabel("Shear (kN)")
 axes[0].grid(True, alpha=0.3)
 axes[0].set_title("Shear Force Diagram (SFD)")
 
-# BMD
 axes[1].plot(results['x'], results['moment']/1000, color='#f43f5e', lw=2)
 axes[1].fill_between(results['x'], results['moment']/1000, color='#f43f5e', alpha=0.2)
 axes[1].set_ylabel("Moment (kN·m)")
 axes[1].grid(True, alpha=0.3)
 axes[1].set_title("Bending Moment Diagram (BMD)")
 
-# Deflection
 axes[2].plot(results['x'], results['deflection']*1000, color='#10b981', lw=2)
 axes[2].fill_between(results['x'], results['deflection']*1000, color='#10b981', alpha=0.2)
 axes[2].set_xlabel("Span (m)")
@@ -201,7 +187,7 @@ axes[2].set_title("Elastic Deflection Curve")
 plt.tight_layout()
 st.pyplot(fig)
 
-# دانلود گزارش PDF
+# خروجی گزارش PDF
 pdf_bytes = generate_pdf_report(beam, results)
 st.download_button(
     label="📄 Download Certified Structural Report (PDF)",
