@@ -101,6 +101,6 @@ This project is distributed under the MIT License. See [LICENSE](LICENSE) for th
 
 ## Author
 
-Alireza Fazeli — [naomi197](https://github.com/naomi197)
+Alireza Sani — [naomi197](https://github.com/naomi197)
 
 Developer: [alirezafazeli@live.com](mailto:alirezafazeli@live.com)
