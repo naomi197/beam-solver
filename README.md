@@ -89,10 +89,18 @@ requirements.txt
 - The application is not a general-purpose finite-element analysis package.
 - Results should be independently reviewed by a qualified structural engineer before safety-critical use.
 
+## Related work
+
+- [Truss Structural Optimizer](https://github.com/naomi197/truss-structural-optimizer) — 2D truss FEA and section sizing
+- [Water Network Optimizer](https://github.com/naomi197/water-network-optimizer) — Hazen-Williams pipe sizing
+- [ClimaScope](https://github.com/naomi197/climascope) — live climate observatory for Android and the browser
+
 ## License
 
 This project is distributed under the MIT License. See [LICENSE](LICENSE) for the full text.
 
 ## Author
 
-Developed by Alireza Fazeli.
+Alireza Fazeli — [naomi197](https://github.com/naomi197)
+
+Developer: [alirezafazeli@live.com](mailto:alirezafazeli@live.com)
